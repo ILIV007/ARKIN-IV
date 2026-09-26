@@ -828,7 +828,7 @@ export default function PacGame(props: GameProps) {
           s.repScore = s.score;
           cbsRef.current.onScore(s.score);
         }
-        const stats = `LV ${s.level} · ● ${s.dotsLeft} · LIVES ${s.lives}`;
+        const stats = `LV ${s.level} · DOTS ${s.dotsLeft} · LIVES ${s.lives}`;
         if (stats !== s.repStats) {
           s.repStats = stats;
           cbsRef.current.onHudStats(stats);

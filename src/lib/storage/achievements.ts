@@ -18,10 +18,8 @@ export interface AchievementDef {
 export const ACHIEVEMENTS: AchievementDef[] = [
   { id: "first_boot", title: "Power On", desc: "Boot the ARKIN-IV for the first time", icon: "⚡" },
   { id: "first_run", title: "Cartridge Collector", desc: "Run your first game cartridge", icon: "🎮" },
-  { id: "terminal_explorer", title: "Command Line Cowboy", desc: "Execute 10 terminal commands", icon: "⌨️" },
-  { id: "theme_switcher", title: "Mood Swinger", desc: "Try every color theme", icon: "🎨" },
+  { id: "theme_switcher", title: "Mood Swinger", desc: "Try both color themes", icon: "🎨" },
   { id: "konami", title: "↑↑↓↓←→←→BA", desc: "An old code from a distant past", icon: "🕹️", secret: true },
-  { id: "hacker", title: "I'm In.", desc: "Hack the mainframe (legally)", icon: "🕶️", secret: true },
   { id: "snake_first", title: "Hiss", desc: "Play SERPENT.EXE", icon: "🐍" },
   { id: "snake_apples_10", title: "Orchard Raider", desc: "Eat 10 apples in one run", icon: "🍎" },
   { id: "snake_apples_25", title: "Anaconda", desc: "Eat 25 apples in one run", icon: "🐍" },
@@ -66,15 +64,15 @@ export function unlockAchievement(id: string): boolean {
   if (unlocked.includes(id)) return false;
   persistUnlocked([...unlocked, id]);
   playSfx("achieve");
-  toast(def.icon + " TROPHY UNLOCKED", {
-    description: def.title + " — " + def.desc,
+  toast(def.icon + "  TROPHY UNLOCKED — " + def.title, {
+    description: def.desc,
     duration: 4200,
     style: {
-      background: "var(--ark-panel)",
-      border: "2px solid var(--ark-accent)",
-      color: "var(--ark-text)",
-      fontFamily: "var(--font-term), monospace",
-      fontSize: "17px",
+      background: "var(--panel)",
+      border: "1px solid var(--border-2)",
+      color: "var(--text)",
+      fontFamily: "var(--font-grotesk), sans-serif",
+      fontSize: "14px",
     },
   });
   return true;

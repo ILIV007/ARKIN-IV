@@ -4,12 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 
 export type Route =
   | { name: "home" }
-  | { name: "games" }
   | { name: "game"; gameId: string }
   | { name: "scores" }
+  | { name: "trophies" }
   | { name: "settings" }
-  | { name: "about" }
-  | { name: "trophies" };
+  | { name: "about" };
 
 export function parseHash(hash: string): Route {
   const h = hash.replace(/^#\/?/, "").replace(/\/$/, "");
@@ -19,15 +18,15 @@ export function parseHash(hash: string): Route {
     case "games":
       return parts[1]
         ? { name: "game", gameId: parts[1] }
-        : { name: "games" };
+        : { name: "home" };
     case "scores":
       return { name: "scores" };
+    case "trophies":
+      return { name: "trophies" };
     case "settings":
       return { name: "settings" };
     case "about":
       return { name: "about" };
-    case "trophies":
-      return { name: "trophies" };
     default:
       return { name: "home" };
   }

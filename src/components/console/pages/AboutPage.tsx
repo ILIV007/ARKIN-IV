@@ -1,88 +1,80 @@
 "use client";
 
-import { navigate } from "@/lib/router";
-import { playSfx } from "@/lib/audio/chiptune";
-import { GAMES } from "@/lib/games/registry";
-
-const ART = [
-  "  █████╗ ██████╗ ██╗  ██╗██╗███╗   ██╗    ██╗██╗   ██╗",
-  " ██╔══██╗██╔══██╗██║ ██╔╝██║████╗  ██║    ██║██║   ██║",
-  " ███████║██████╔╝█████╔╝ ██║██╔██╗ ██║    ██║██║   ██║",
-  " ██╔══██║██╔══██╗██╔═██╗ ██║██║╚██╗██║ ██ ██║██║   ██║",
-  " ██║  ██║██║  ██║██║  ██╗██║██║ ╚████║ ╚█████╔╝╚██████╔╝",
-  " ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝  ╚════╝  ╚═════╝",
-];
+import { Gamepad2, Github, Layers, Music4, Smartphone, Trophy } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 export function AboutPage() {
+  const t = useT();
+
+  const tech = [
+    { icon: <Layers size={14} />, label: "Next.js 16 · React 19" },
+    { icon: <Gamepad2 size={14} />, label: "Canvas 2D Engines" },
+    { icon: <Music4 size={14} />, label: "Web Audio Chiptune" },
+    { icon: <Trophy size={14} />, label: "Local Trophy & Score Vault" },
+    { icon: <Smartphone size={14} />, label: "Touch · D-Pad · Keyboard" },
+  ];
+
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <div className="shrink-0 flex items-center justify-between px-3 sm:px-6 py-3 border-b-2 ark-bc">
-        <div className="font-pixel text-[11px] sm:text-sm ark-accent text-glow">
-          ABOUT ARKIN-IV
+    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <header className="mb-9 text-center">
+        <h1 className="font-pixel text-sm sm:text-lg">
+          <span className="ark-text">ABOUT </span>
+          <span style={{ color: "var(--neon-soft)", textShadow: "0 0 20px var(--neon-glow)" }}>
+            ARKIN IV
+          </span>
+        </h1>
+        <p className="mt-3 text-sm ark-dim sm:text-base">{t.about.sub}</p>
+      </header>
+
+      {/* story */}
+      <section className="surface mb-4 p-6 sm:p-8">
+        <h2 className="mb-3 font-pixel text-[9px] ark-dim">{t.about.storyTitle}</h2>
+        <p className="text-base leading-relaxed ark-text sm:text-lg">{t.about.story}</p>
+      </section>
+
+      {/* tech */}
+      <section className="surface mb-4 p-6 sm:p-8">
+        <h2 className="mb-4 font-pixel text-[9px] ark-dim">{t.about.techTitle}</h2>
+        <ul className="flex flex-wrap gap-2.5">
+          {tech.map((item) => (
+            <li
+              key={item.label}
+              className="flex items-center gap-2 rounded-lg border px-3.5 py-2.5 text-sm ark-text"
+              style={{ borderColor: "var(--border)", background: "var(--panel-2)" }}
+            >
+              <span style={{ color: "var(--neon-soft)" }}>{item.icon}</span>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* open source */}
+      <section
+        className="surface flex flex-col items-start justify-between gap-4 p-6 sm:flex-row sm:items-center sm:p-8"
+        style={{ background: "linear-gradient(135deg, var(--panel), var(--panel-2))" }}
+      >
+        <div>
+          <h2 className="font-pixel text-[9px]" style={{ color: "var(--neon-soft)" }}>
+            {t.about.linkTitle}
+          </h2>
+          <p className="mt-2 max-w-sm text-sm ark-dim">{t.about.linkDesc}</p>
         </div>
-        <button
-          onClick={() => {
-            playSfx("back");
-            navigate("/");
-          }}
-          className="font-pixel text-[8px] px-3 py-2 border-2 ark-bc ark-dim hover:ark-ba hover:ark-accent rounded-sm transition-colors no-touch-highlight"
+        <a
+          href="https://github.com/ILIV007/ARKIN-IV"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-pixel flex items-center gap-2 px-5 py-3.5 font-pixel text-[9px]"
+          style={{ color: "var(--text)", borderColor: "var(--border-2)", background: "var(--panel)" }}
         >
-          ◂ TERMINAL
-        </button>
-      </div>
+          <Github size={14} />
+          GITHUB
+        </a>
+      </section>
 
-      <div className="flex-1 overflow-y-auto ark-scroll px-4 sm:px-8 py-6">
-        <div className="max-w-2xl mx-auto flex flex-col gap-5">
-          <pre className="font-pixel text-[6px] sm:text-[9px] leading-[1.9] ark-accent-soft text-glow hidden sm:block" aria-hidden>
-            {ART.join("\n")}
-          </pre>
-
-          <div className="font-term text-lg sm:text-xl leading-relaxed ark-text space-y-3">
-            <p>
-              <span className="ark-accent font-pixel text-[10px]">THE LEGEND ▸</span>{" "}
-              Forged in 1987 by the <span className="ark-ok">ARKIN CORP.</span>, the
-              ARKIN-IV was the last console ever built with a heart. While other
-              machines chased polygons, the IV chased <em>feeling</em> — the click of a
-              cartridge, the hum of a phosphor tube, the terror of a final life.
-            </p>
-            <p>
-              It slept for decades in a warehouse basement... until someone booted it
-              up inside your browser. Now the grid runs again: 4 cartridges, a talking
-              terminal, and a trophy cabinet waiting to be filled.
-            </p>
-            <p className="ark-dim">
-              SPEC SHEET: Z80-A @ 3.58MHz · 640K RAM · SN76489 4-voice sound chip ·
-              P-22 violet phosphor CRT · one very determined AI coprocessor.
-            </p>
-          </div>
-
-          <div className="ark-panel border-2 ark-bc rounded-md p-4">
-            <div className="font-pixel text-[9px] ark-dim mb-2">CARTRIDGE ROSTER</div>
-            <ul className="font-term text-lg space-y-1">
-              {GAMES.map((g) => (
-                <li key={g.id}>
-                  <button
-                    onClick={() => {
-                      playSfx("select");
-                      navigate(`/games/${g.id}`);
-                    }}
-                    className="hover:underline text-left no-touch-highlight"
-                    style={{ color: g.accent }}
-                  >
-                    ▸ {g.title}
-                  </button>
-                  <span className="ark-dim"> — {g.tagline}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="text-center font-term text-base ark-dim pb-2">
-            ARKIN-IV · built with ♥, CSS scanlines and zero external sprite assets ·
-            scores live in your browser only
-          </div>
-        </div>
-      </div>
+      <p className="mt-8 text-center font-pixel text-[7px] ark-dim">
+        {t.about.version}: ARKIN-IV v2.0 · MODERN RETRO CONSOLE
+      </p>
     </div>
   );
 }
