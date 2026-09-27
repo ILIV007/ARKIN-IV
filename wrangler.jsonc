@@ -7,5 +7,14 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  // Global leaderboard storage — every visitor sees the same scores.
+  // Create yours once, then paste the id:
+  //   npx wrangler kv namespace create ARKIN_KV
+  "kv_namespaces": [
+    {
+      "binding": "ARKIN_KV",
+      "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+    }
+  ]
 }

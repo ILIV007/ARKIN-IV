@@ -445,7 +445,9 @@ export default function TetrisGame(props: GameProps) {
       for (let r = 0; r < ROWS; r++) {
         if (!dead.has(r)) kept.push(g.board[r]);
       }
-      while (kept.length < ROWS) kept.push(new Array<Cell>(COLS).fill(null));
+      // Row 0 is the TOP of the board: cleared rows collapse downward,
+      // so the empty replacement rows must be inserted at the TOP.
+      while (kept.length < ROWS) kept.unshift(new Array<Cell>(COLS).fill(null));
       g.board = kept;
       g.clearing = null;
       spawn();
@@ -970,7 +972,6 @@ export default function TetrisGame(props: GameProps) {
     cbsRef.current.onScore(0);
     updateHud();
     unlockAchievement("tetris_first");
-    if (g.level >= 5) unlockAchievement("tetris_level_5");
 
     apiRef.current = { move, rotate, soft: softStep, hard: hardDrop };
 

@@ -125,6 +125,7 @@ function RouteScreen({ route }: { route: Route }) {
 export default function Home() {
   const [booted, setBooted] = useState(true);
   const [route] = useHashRoute();
+  const theme = useConsoleStore((s) => s.theme);
 
   // show the power-on animation once per session (client-side only)
   useEffect(() => {
@@ -165,7 +166,13 @@ export default function Home() {
     <>
       <KonamiListener />
       <ThemeSync />
-      <Toaster position="bottom-right" gap={8} offset={14} closeButton />
+      <Toaster
+        position="bottom-right"
+        gap={8}
+        offset={14}
+        closeButton
+        theme={theme}
+      />
 
       <ConsoleFrame />
       <CrtOverlay />

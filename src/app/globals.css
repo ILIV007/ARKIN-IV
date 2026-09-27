@@ -27,6 +27,9 @@
   --grid-line: rgba(148, 163, 216, 0.07);
   --neon-glow: rgba(176, 38, 255, 0.55);
   --topbar: rgba(7, 11, 21, 0.78);
+  --medal-1: #fbbf24;
+  --medal-2: #e2e8f0;
+  --medal-3: #d09a6a;
   color-scheme: dark;
 }
 
@@ -50,6 +53,9 @@
   --grid-line: rgba(90, 100, 140, 0.08);
   --neon-glow: rgba(139, 92, 246, 0.4);
   --topbar: rgba(242, 244, 251, 0.82);
+  --medal-1: #b45309;
+  --medal-2: #475569;
+  --medal-3: #92400e;
   color-scheme: light;
 }
 
@@ -221,12 +227,20 @@ body {
   background: transparent;
 }
 
-/* ---------- touch helpers ---------- */
+/* ---------- touch helpers ----------
+   D-Pads / touch buttons show when the PRIMARY pointer is coarse (real
+   phones & tablets — decided by the browser itself, no JS timing race)
+   OR when the runtime detects touch support (js-touch fallback). */
 .touch-only {
   display: none;
 }
 .js-touch .touch-only {
   display: flex;
+}
+@media (pointer: coarse) {
+  .touch-only {
+    display: flex;
+  }
 }
 .no-touch-highlight {
   -webkit-tap-highlight-color: transparent;

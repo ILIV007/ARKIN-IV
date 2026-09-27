@@ -25,6 +25,7 @@ import {
   saveHighScore,
   getTopScore,
 } from "@/lib/storage/highscores";
+import { submitGlobalScore } from "@/lib/api/scores";
 import { unlockAchievement } from "@/lib/storage/achievements";
 import { playSfx } from "@/lib/audio/chiptune";
 import { navigate } from "@/lib/router";
@@ -158,6 +159,10 @@ export function GameShell({ game }: { game: GameDefinition }) {
   const [needsInitials, setNeedsInitials] = useState(false);
   const [initials, setInitials] = useState("AAA");
   const [savedRank, setSavedRank] = useState<number | null>(null);
+  const [globalStatus, setGlobalStatus] = useState<
+    "idle" | "sending" | "ok" | "fail"
+  >("idle");
+  const [globalRank, setGlobalRank] = useState<number | null>(null);
   const scoreRef = useRef(0);
   const gameOverRef = useRef(false);
 
@@ -177,6 +182,8 @@ export function GameShell({ game }: { game: GameDefinition }) {
     setHudStats("");
     setSavedRank(null);
     setNeedsInitials(false);
+    setGlobalStatus("idle");
+    setGlobalRank(null);
     setPaused(false);
     setRunId((r) => r + 1);
     setPhase("playing");
@@ -209,15 +216,33 @@ export function GameShell({ game }: { game: GameDefinition }) {
   const submitInitials = useCallback(() => {
     const clean = (initials || "AAA").toUpperCase().slice(0, 3).padEnd(3, "A");
     window.localStorage.setItem(INITIALS_KEY, clean);
-    const rank = saveHighScore(game.id, {
+    const payload = {
+      gameId: game.id,
       name: clean,
       score: finalScore,
       difficulty,
       date: Date.now(),
+    };
+    const rank = saveHighScore(game.id, {
+      name: clean,
+      score: finalScore,
+      difficulty,
+      date: payload.date,
     });
     setSavedRank(rank);
     setNeedsInitials(false);
     playSfx("coin");
+
+    // fire-and-forget: also send the run to the WORLD board
+    setGlobalStatus("sending");
+    void submitGlobalScore(payload).then((res) => {
+      if (res && res.ok) {
+        setGlobalRank(res.rank);
+        setGlobalStatus("ok");
+      } else {
+        setGlobalStatus("fail");
+      }
+    });
   }, [difficulty, finalScore, game.id, initials]);
 
   // pause hotkey
@@ -534,6 +559,40 @@ export function GameShell({ game }: { game: GameDefinition }) {
                 {t.game.score}:{" "}
                 <span style={{ color: "var(--ok)" }}>{String(finalScore).padStart(6, "0")}</span>
               </div>
+
+              {/* world board status */}
+              {globalStatus !== "idle" && (
+                <div
+                  className="flex items-center gap-2 rounded-lg border px-3 py-2 font-pixel text-[7px] sm:text-[8px]"
+                  style={{
+                    borderColor:
+                      globalStatus === "ok" && globalRank
+                        ? "var(--warn)"
+                        : "var(--border)",
+                    color:
+                      globalStatus === "sending"
+                        ? "var(--dim)"
+                        : globalStatus === "fail"
+                          ? "var(--dim)"
+                          : globalRank
+                            ? "var(--warn)"
+                            : "var(--ok)",
+                  }}
+                  role="status"
+                >
+                  {globalStatus === "sending" ? (
+                    <>📡 {t.scores.loading}</>
+                  ) : globalStatus === "fail" ? (
+                    <>📴 {t.game.globalFail}</>
+                  ) : globalRank ? (
+                    <>
+                      🌍 {t.game.globalRank} <span>#{globalRank}</span>
+                    </>
+                  ) : (
+                    <>🌍 {t.game.globalSaved}</>
+                  )}
+                </div>
+              )}
 
               {needsInitials ? (
                 <div className="flex flex-col items-center gap-2.5">
